@@ -3,6 +3,7 @@ from agents import Agent, Runner, set_default_openai_key
 from prompts.planner_prompt import build_planner_prompt
 from models.schemas import TripPlan
 from tenacity import retry, stop_after_attempt, wait_exponential
+from tools.travel_time_tool import get_travel_time
 
 set_default_openai_key(settings.openai_api_key)
 
@@ -22,9 +23,11 @@ Follow these principles:
 - Always produce output that matches the required schema.
 - Ensure the number of days in the itinerary matches the trip duration.
 - Avoid overloading a single day with too many activities.
+- Use the get_travel_time tool to calculate realistic travel times between locations when planning multi-destination itineraries.
 """,
             model="gpt-4o",
-            output_type=TripPlan
+            output_type=TripPlan,
+            tools=[get_travel_time]
         )
 
     @staticmethod
