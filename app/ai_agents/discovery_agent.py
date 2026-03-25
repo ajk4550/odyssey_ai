@@ -48,24 +48,35 @@ Follow these principles:
         best = None
         best_issue_count = float("inf")
 
+        # Trying up to 3 times to generate a passable list of suggestions.
         for attempt in range(3):
+            # Prompt the agent to return suggestions
             result = await DiscoveryAgent._run_agent(prompt)
             response = result.final_output
+            # Pass suggestions to the evaluator to see if these meet the criteria.
             passed, issues = evaluate(response, request)
 
+            # If we passed, stopped trying and return the response
             if passed:
                 return response
 
+            # Compare our best response to the current.
+            # Best could be defined in many ways. Here I am using
+            # the number of issues returned to decide which is a
+            # better response
             if len(issues) < best_issue_count:
                 best = response
                 best_issue_count = len(issues)
 
+            # Generate feedback for LLM based on issues found.
             feedback = "Your previous response had the following issues:\n"
             feedback += "\n".join(f"- {issue}" for issue in issues)
             feedback += "\nPlease try again and fix all of these issues."
 
             logger.warning(f"Discovery attempt {attempt + 1} failed evaluation: {feedback}")
-            prompt = prompt + f"\n\n{feedback}"
+            prompt = prompt + f"\n\n{feedback}" # Add our feedback to the prompt for LLM
 
+        # If we reached here, we tried 3 times and didn't get a passable result
+        # Return our best result instead
         logger.warning("All attempts failed evaluation, returning the best result")
         return best
