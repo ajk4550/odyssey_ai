@@ -12,6 +12,10 @@ MODE_MAP = {
     "cycling": "cycling-regular"
 }
 
+# In-memory cache layer since some geocoding calls will be redundant.
+_geocode_cache: dict[str, list[float]] = {} # Holds location -> geocode info
+_travel_time_cache: dict[tuple, dict] = {} # Holds travel time info
+
 @function_tool
 async def get_travel_time(origin: str, destination: str, mode: str = "driving") -> dict:
     """Get driving time and distance between two locations.
@@ -24,6 +28,11 @@ async def _get_travel_time(origin: str, destination: str, mode: str = "driving")
     # Checking if mode is a valid mode type
     if mode not in MODE_MAP:
         raise ValueError(f"Invalid mode '{mode}'. Choose from: {', '.join(MODE_MAP.keys())}")
+
+    cache_key = (origin.lower().strip(), destination.lower().strip(), mode)
+    if cache_key in _travel_time_cache:
+        logger.debug(f"Travel time cache hit for {origin} -> {destination} ({mode})")
+        return _travel_time_cache[cache_key]
 
     async with httpx.AsyncClient() as client:
         origin_coords = await fetch_geocode(client, origin) # Convert location string to geo-coordinates
@@ -53,14 +62,22 @@ async def _get_travel_time(origin: str, destination: str, mode: str = "driving")
     duration_text = _format_duration(total_minutes) # Fetching duration label utilizing hours and minutes
 
     logger.info(f"Travel time {origin} → {destination}: {total_minutes} min ({round(distance_miles, 1)} miles)")
-    return {
+    result = {
         "minutes": total_minutes,
         "duration_text": duration_text,
         "distance_miles": round(distance_miles, 1),
         "mode": mode 
-    } 
+    }
+    _travel_time_cache[cache_key] = result # Adding results to cache
+    return result
 
 async def fetch_geocode(client: httpx.AsyncClient, location: str) -> list[float]:
+    # Before attempting to fetch, try to return from cache first
+    cache_key = location.lower().strip()
+    if cache_key in _geocode_cache:
+        logger.debug(f"Geocode cache hit for '{location}'")
+        return _geocode_cache[cache_key]
+
     # Request to openrouteservices to convert location string into geo-coordinates.
     response = await client.get(
         f"{ORS_BASE_URL}/geocode/search",
@@ -81,6 +98,7 @@ async def fetch_geocode(client: httpx.AsyncClient, location: str) -> list[float]
     # Extracting out the coordinates and returning
     coordinates = features[0]["geometry"]["coordinates"]
     logger.debug(f"Geocoded '{location}' → {coordinates}")
+    _geocode_cache[cache_key] = coordinates # Adding results to cache
     return coordinates
 
 def _format_duration(total_minutes: int) -> str:
