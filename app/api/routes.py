@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.schemas import TripRequest, TripResponse
+from models.schemas import TripRequest, TripResponse, TripDiscoveryRequest, TripDiscoveryResponse
 from models.db_models import Trip
 from models.enums import TripStatus
 from db.session import get_db
 from ai_agents.planner_agent import PlannerAgent
+from ai_agents.discovery_agent import DiscoveryAgent
 
 router = APIRouter(prefix="/api/v1", tags=["trips"])
 
@@ -35,3 +36,10 @@ async def plan_trip(request: TripRequest, db: AsyncSession = Depends(get_db)):
     await db.refresh(trip)
 
     return { "id": trip.id, "status": trip.status, "plan": trip_plan }
+
+@router.post("/suggest-destinations", response_model=TripDiscoveryResponse)
+async def suggest_destinations(request: TripDiscoveryRequest):
+    try:
+        return await DiscoveryAgent.generate_suggestions(request)
+    except Exception:
+        raise HTTPException(status_code=500, detail="Destination discovery failed. Please try again later.")

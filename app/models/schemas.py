@@ -3,6 +3,7 @@ from datetime import date
 from models.enums import TripStatus
 
 class TripRequest(BaseModel):
+    origin: str = Field(max_length=200)
     destination_idea: str = Field(max_length=200)
     start_date: date
     end_date: date
@@ -27,3 +28,20 @@ class TripResponse(BaseModel):
     id: int
     status: TripStatus
     plan: TripPlan
+
+class TripDiscoveryRequest(BaseModel):
+    origin: str = Field(max_length=1000)
+    vacation_type: str = Field(max_length=1000)
+    month: str
+    budget: int | None = None
+    interests: list[str] | None = None
+    exclude: list[str] | None = None
+    max_travel_hours: int | None = None
+
+class DestinationSuggestion(BaseModel):
+    destination: str
+    reason: str
+    estimated_travel_time: str
+
+class TripDiscoveryResponse(BaseModel):
+    suggestions: list[DestinationSuggestion]
