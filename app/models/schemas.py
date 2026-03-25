@@ -42,6 +42,7 @@ class DestinationSuggestion(BaseModel):
     destination: str
     reason: str
     estimated_travel_time: str
+    travel_time_minutes: int
 
 class TripDiscoveryResponse(BaseModel):
     suggestions: list[DestinationSuggestion]
