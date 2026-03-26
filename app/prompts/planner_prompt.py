@@ -4,6 +4,8 @@ def build_planner_prompt(trip_request: TripRequest):
     """
     Convert a TripRequest into a structured prompt payload.
     """
+    interests = ", ".join(trip_request.interests) if trip_request.interests else "not specified"
+    exclusions = ", ".join(trip_request.exclude) if trip_request.exclude else "none"
 
     return (
         f"Plan a trip using the following user-provided details:\n"
@@ -13,5 +15,7 @@ def build_planner_prompt(trip_request: TripRequest):
         f"Start date: {trip_request.start_date}\n"
         f"End date: {trip_request.end_date}\n"
         f"Budget: ${trip_request.budget}\n"
+        f"Interests: {interests}\n"
+        f"Exclusions: {exclusions}\n"
         f"</user_input>"
     )

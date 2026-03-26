@@ -23,6 +23,8 @@ Follow these principles:
 - Always produce output that matches the required schema.
 - Ensure the number of days in the itinerary matches the trip duration.
 - Avoid overloading a single day with too many activities.
+- Include a variety of activities, paying attention to the users interests in particular.
+- If the exclusion list includes activities, don't include those in the itinerary.
 - Use the get_travel_time tool to calculate realistic travel times between locations when planning multi-destination itineraries.
 """,
             model="gpt-4o",

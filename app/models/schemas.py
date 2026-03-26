@@ -8,6 +8,8 @@ class TripRequest(BaseModel):
     start_date: date
     end_date: date
     budget: int | None = None
+    interests: list[str] | None = None
+    exclude: list[str] | None = None
 
 class Activity(BaseModel):
     name: str
