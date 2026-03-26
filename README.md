@@ -1,3 +1,5 @@
+![Odyssey AI](header.jpg)
+
 # Odyssey AI
 
 An AI-powered trip planning API built with FastAPI. Users first discover destination suggestions based on their preferences, then generate a full day-by-day itinerary for their chosen destination.
