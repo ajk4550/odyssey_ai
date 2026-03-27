@@ -5,5 +5,7 @@ class Settings(BaseSettings):
     database_url: str
     openai_api_key: str
     openrouteservice_api_key: str
+    google_places_api_key: str
+    ticketmaster_api_key: str
 
 settings = Settings()

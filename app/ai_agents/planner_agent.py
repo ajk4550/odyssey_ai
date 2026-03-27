@@ -4,6 +4,7 @@ from prompts.planner_prompt import build_planner_prompt
 from models.schemas import TripPlan
 from tenacity import retry, stop_after_attempt, wait_exponential
 from tools.travel_time_tool import get_travel_time
+from tools.events_tool import get_destination_activities
 
 set_default_openai_key(settings.openai_api_key)
 
@@ -26,10 +27,17 @@ Follow these principles:
 - Include a variety of activities, paying attention to the users interests in particular.
 - If the exclusion list includes activities, don't include those in the itinerary.
 - Use the get_travel_time tool to calculate realistic travel times between locations when planning multi-destination itineraries.
+- Use get_destination_activities to look up real attractions and events at the destination.
+- Incorporate specific events happening during the trip dates into the itinerary where relevant.
+- Do not limit suggestions to the user's stated interests — a user interested in hiking
+  might still enjoy a local festival or sports event. Use judgment.
+- Prefer named, specific activities over generic ones (e.g. "Visit the Isabella Stewart
+  Gardner Museum" over "Visit a museum").
+- Do not schedule more than one ticketed evening event per day.
 """,
             model="gpt-4o",
             output_type=TripPlan,
-            tools=[get_travel_time]
+            tools=[get_travel_time, get_destination_activities]
         )
 
     @staticmethod

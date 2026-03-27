@@ -1,0 +1,12 @@
+fastapi[standard]
+uvicorn
+httpx
+sqlalchemy[asyncio]
+asyncpg
+alembic
+pydantic-settings
+pydantic[email]
+openai-agents
+python-dotenv
+python-dateutil
+tenacity
