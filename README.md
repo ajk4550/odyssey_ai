@@ -17,6 +17,8 @@ An AI-powered trip planning API built with FastAPI. Users first discover destina
 - **Alembic** — database migrations
 - **OpenAI Agents SDK** — AI agent orchestration
 - **OpenRouteService API** — geocoding and travel time calculations
+- **Google Places API** — attractions and points of interest
+- **Ticketmaster API** — events (concerts, sports, festivals)
 - **Pydantic v2** — request/response validation
 
 ## Setup
@@ -29,12 +31,16 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+> Dependencies are managed with [pip-tools](https://pip-tools.readthedocs.io). `requirements.in` holds the direct dependencies; `requirements.txt` is the pinned lockfile generated from it. To add a dependency, add it to `requirements.in` and run `pip-compile requirements.in` to regenerate `requirements.txt`, then `pip-sync` to install.
+
 **2. Create a `.env` file** (see `.env.example`):
 
 ```
-DATABASE_URL=postgresql+asyncpg://user:password@localhost/odyssey
-OPENAI_API_KEY=your_openai_key
-OPENROUTESERVICE_API_KEY=your_ors_key
+DATABASE_URL=postgresql+asyncpg://user@localhost/db_name
+OPENAI_API_KEY=sk-...
+OPENROUTESERVICE_API_KEY=xyz
+TICKETMASTER_API_KEY=xyz
+GOOGLE_PLACES_API_KEY=xyz
 ```
 
 **3. Run database migrations**
@@ -93,6 +99,6 @@ app/
 ├── db/                 # Database session and init
 ├── models/             # SQLAlchemy models, Pydantic schemas, enums
 ├── prompts/            # Prompt builders for each agent
-└── tools/              # Travel time tool (used by agents)
+└── tools/              # Travel time and events tools (used by agents)
 migrations/             # Alembic migration files
 ```
