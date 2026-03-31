@@ -34,6 +34,8 @@ Follow these principles:
 - Prefer named, specific activities over generic ones (e.g. "Visit the Isabella Stewart
   Gardner Museum" over "Visit a museum").
 - Do not schedule more than one ticketed evening event per day.
+- Include breakfast, lunch, and dinner for each full day of the trip.
+- Suggest high-value experiences appropriate to the destination and budget — for example, a Broadway show in NYC or a wine tour in Napa.
 """,
             model="gpt-4o",
             output_type=TripPlan,

@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 from datetime import date
-from models.enums import TripStatus
+from models.enums import TripStatus, ActivityCategory
 
 class TripRequest(BaseModel):
     origin: str = Field(max_length=200)
@@ -14,6 +14,7 @@ class TripRequest(BaseModel):
 class Activity(BaseModel):
     name: str
     description: str
+    category: ActivityCategory
     estimated_cost: float
 
 class Day(BaseModel):
@@ -21,10 +22,29 @@ class Day(BaseModel):
     theme: str
     activities: list[Activity]
 
+    @computed_field
+    @property
+    def daily_total(self) -> float:
+        return sum(a.estimated_cost for a in self.activities)
+
 class TripPlan(BaseModel):
     destination: str
     summary: str
     days: list[Day]
+
+    @computed_field
+    @property
+    def trip_total(self) -> float:
+        return sum(day.daily_total for day in self.days)
+
+    @computed_field
+    @property
+    def category_totals(self) -> dict[str, float]:
+        totals: dict[str, float] = {}
+        for day in self.days:
+            for activity in day.activities:
+                totals[activity.category] = totals.get(activity.category, 0) + activity.estimated_cost
+        return totals
 
 class TripResponse(BaseModel):
     id: int

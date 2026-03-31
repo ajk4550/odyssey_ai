@@ -18,4 +18,8 @@ def build_planner_prompt(trip_request: TripRequest):
         f"Interests: {interests}\n"
         f"Exclusions: {exclusions}\n"
         f"</user_input>"
+        f"<instructions>\n"
+        f"- The budget is a target to plan toward. Your itinerary should utilize close to the full ${trip_request.budget}.\n"
+        f"- Include a lodging activity for every night of the trip. Each night should have its own entry — do not consolidate multiple nights into one.\n"
+        f"</instructions>"
     )
