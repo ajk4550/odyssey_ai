@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, computed_field
 from datetime import date
-from models.enums import TripStatus, ActivityCategory
+from models.enums import TripStatus, ActivityCategory, EvaluationIssueCategory
+from typing import Literal
 
 class TripRequest(BaseModel):
     origin: str = Field(max_length=200)
@@ -68,3 +69,12 @@ class DestinationSuggestion(BaseModel):
 
 class TripDiscoveryResponse(BaseModel):
     suggestions: list[DestinationSuggestion]
+
+class EvaluationIssue(BaseModel):
+    severity: Literal["blocking", "warning"]
+    category: EvaluationIssueCategory
+    description: str
+
+class PlanEvaluation(BaseModel):
+    passed: bool
+    issues: list[EvaluationIssue]
