@@ -25,7 +25,7 @@ Check for the following issues:
 - Meals (blocking): Every full day must include breakfast, lunch, and dinner. Flag any day that is missing a meal.
 - Pacing (warning): Flag any day that has an unrealistic number of activities (more than ~6-7 items in a single day is likely overloaded).
 - Specificity (warning): Flag activities that are too generic (e.g. "visit a museum", "eat at a restaurant"). Activities should reference real, named places.
-- Variety (warning): Flag if the itinerary is repetitive — for example, multiple consecutive days with the same type of activity, or the same cuisine appearing at more than two meals.
+- Variety (warning): Flag if the itinerary is repetitive — for example, multiple consecutive days with the same type of activity, or the same cuisine appearing at more than two meals. Variety does not apply to lodging — staying at the same hotel throughout the trip is expected and correct.
 
 Set `passed` to true only if there are zero blocking issues. Warnings alone should not cause a failure.
 """,
