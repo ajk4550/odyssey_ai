@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.git/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.pytest_cache/
+htmlcov/
+.coverage
+memory/
+plans/
